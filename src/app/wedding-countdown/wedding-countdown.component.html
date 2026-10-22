@@ -1,0 +1,110 @@
+<section class="landing" dir="rtl" lang="he">
+  <div class="backdrop" aria-hidden="true"></div>
+
+  @if (isMarried()) {
+    <div class="confetti-layer" aria-hidden="true">
+      @for (piece of confetti; track $index) {
+        <span
+          class="confetti"
+          [class.round]="piece.round"
+          [style.left.%]="piece.left"
+          [style.width.px]="piece.width"
+          [style.height.px]="piece.height"
+          [style.background]="piece.color"
+          [style.animation-delay.s]="piece.delay"
+          [style.animation-duration.s]="piece.duration"
+        ></span>
+      }
+    </div>
+  }
+
+  <main class="card">
+    <p class="bsd">בסיעתא דשמיא</p>
+
+    <img class="monogram" src="monogram.png" alt="M&amp;R" width="938" height="591" />
+
+    <p class="verse">נעלה את ירושלים על ראש שמחתנו</p>
+
+    @if (!isMarried()) {
+      <p class="eyebrow">מתרגשים איתכם!</p>
+      <h1 class="title">הספירה לאחור לחתונה של</h1>
+    } @else {
+      <h1 class="title">בשעה טובה ומוצלחת</h1>
+    }
+
+    <h2 class="names">
+      <span>{{ event.groom }}</span>
+      <span class="amp">&amp;</span>
+      <span>{{ event.bride }}</span>
+    </h2>
+
+    @if (!isMarried()) {
+      @if (isToday()) {
+        <p class="today">✨ היום זה קורה! ✨</p>
+      }
+
+      <div class="countdown" role="timer" aria-label="זמן שנותר עד החופה">
+        @for (unit of timeUnits(); track unit.label) {
+          <div class="unit">
+            <span class="value">{{ pad(unit.value) }}</span>
+            <span class="label">{{ unit.label }}</span>
+          </div>
+        }
+      </div>
+      <p class="until">עד החופה</p>
+    } @else {
+      <div class="mazal-tov" role="status">
+        <p class="mazal-tov-title">מזל טוב!</p>
+        <p class="mazal-tov-text">
+          שתזכו לבנות בית נאמן בישראל,<br />
+          בית מלא אהבה, שמחה ונחת 💍
+        </p>
+      </div>
+    }
+
+    <div class="divider" aria-hidden="true"><span>❦</span></div>
+
+    <div class="details">
+      <div class="detail">
+        <span class="detail-label">מתי</span>
+        <span class="detail-value">{{ event.hebrewDate }}</span>
+        <span class="detail-sub">{{ event.gregorianDate }} · חופה בשעה {{ event.chuppah }}</span>
+      </div>
+      <div class="detail">
+        <span class="detail-label">איפה</span>
+        <span class="detail-value">{{ event.hall }}</span>
+        <span class="detail-sub">{{ event.address }}</span>
+      </div>
+    </div>
+
+    @if (!isMarried()) {
+      <div class="actions">
+        <a class="btn" [href]="wazeUrl" target="_blank" rel="noopener">ניווט ב-Waze</a>
+        <a class="btn" [href]="mapsUrl" target="_blank" rel="noopener">Google Maps</a>
+        <a class="btn btn-outline" [href]="calendarUrl" target="_blank" rel="noopener">הוספה ליומן</a>
+      </div>
+    }
+
+    <div class="family">
+      <div class="parents">
+        <div>
+          <span class="detail-label">הורי החתן</span>
+          <span class="parent-name">{{ event.groomParents }}</span>
+        </div>
+        <div>
+          <span class="detail-label">הורי הכלה</span>
+          <span class="parent-name">{{ event.brideParents }}</span>
+        </div>
+      </div>
+
+      <p class="grandparents-title">הסבים והסבתות</p>
+      <ul class="grandparents">
+        @for (name of event.grandparents; track name) {
+          <li>{{ name }}</li>
+        }
+      </ul>
+    </div>
+
+    <p class="footer-note">נשמח לראותכם משתתפים בשמחתנו</p>
+  </main>
+</section>
