@@ -12,7 +12,7 @@
   font-family: 'Assistant', 'Heebo', system-ui, sans-serif;
 }
 
-/* ---------- Background: the invitation itself ---------- */
+/* ---------- Background: the couple's photo, softly blurred ---------- */
 .landing {
   position: relative;
   min-height: 100vh;
@@ -20,27 +20,87 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 16px;
+  padding: 48px 24px;
   box-sizing: border-box;
   overflow: hidden;
-  background: #3a2718 url('/invitation.jpg') center / cover no-repeat fixed;
+  background: #3a2718;
+}
+
+.bg-photo {
+  position: fixed;
+  inset: -60px;
+  background: url('/couple.jpg') center 30% / cover no-repeat;
+  filter: blur(30px) saturate(115%) brightness(0.85);
+  transform: scale(1.08);
 }
 
 .backdrop {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, rgba(58, 36, 20, 0.35) 0%, rgba(40, 24, 12, 0.72) 100%);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+    radial-gradient(ellipse at center, rgba(90, 58, 32, 0.15) 0%, rgba(40, 24, 12, 0.6) 100%),
+    linear-gradient(180deg, rgba(252, 243, 238, 0.08), rgba(58, 36, 20, 0.25));
+}
+
+/* ---------- Layout: photo + card ---------- */
+.layout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
+  width: 100%;
+  max-width: 1160px;
+}
+
+.photo-frame {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(380px, 34vw);
+  margin: 0;
+  padding: 12px 12px 0;
+  background: var(--cream);
+  border-radius: 24px;
+  box-shadow:
+    0 30px 70px rgba(20, 10, 4, 0.55),
+    inset 0 0 0 1px rgba(168, 105, 43, 0.3);
+  transform: rotate(2.5deg);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* backwards (not both) so the hover transform still works after the intro */
+  animation: photoIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.photo-frame:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+.photo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  object-position: center 30%;
+  border-radius: 16px;
+}
+
+.photo-frame figcaption {
+  padding: 6px 0 10px;
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  line-height: 1.2;
+  color: var(--copper);
 }
 
 /* ---------- Glass card ---------- */
 .card {
   position: relative;
   z-index: 2;
+  flex: 1 1 auto;
   width: 100%;
-  max-width: 640px;
+  max-width: 620px;
   padding: 28px 40px 36px;
   box-sizing: border-box;
   text-align: center;
@@ -357,6 +417,11 @@
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes photoIn {
+  from { opacity: 0; transform: translateY(40px) rotate(6deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(2.5deg); }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-6px); }
@@ -384,10 +449,46 @@
 }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Photo becomes a hero on top; the card overlaps its bottom edge */
+  .photo-frame {
+    width: 100%;
+    max-width: 480px;
+    padding: 10px;
+    transform: none;
+    animation-name: fadeUp;
+  }
+
+  .photo-frame:hover {
+    transform: none;
+  }
+
+  .photo-frame img {
+    aspect-ratio: 3 / 4;
+  }
+
+  .photo-frame figcaption {
+    display: none;
+  }
+
+  .card {
+    margin-top: -70px;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 600px) {
   .landing {
-    padding: 20px 12px;
-    background-attachment: scroll;
+    padding: 16px 12px 24px;
   }
 
   .card {
@@ -423,6 +524,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
+  .photo-frame,
   .monogram,
   .today,
   .mazal-tov,
